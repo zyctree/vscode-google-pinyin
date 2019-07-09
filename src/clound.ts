@@ -7,7 +7,7 @@ class H2Client {
     h2client: http2.ClientHttp2Session;
 
     constructor(url: string) {
-        this.h2client = http2.connect("https://127.0.0.1:1080");
+        this.h2client = http2.connect(url);
         this.h2client.setTimeout(1000);
         const add_client_on = (event: string) => {
             this.h2client.on(event, () => window.showInformationMessage(`${url}: ${event}`));
@@ -17,34 +17,34 @@ class H2Client {
     }
     async post(path: string): Promise<string> {
         return new Promise((resolve, reject) => {
-            window.showInformationMessage(path);
+            // window.showInformationMessage(path);
             const req = this.h2client.request({
-                ':path': path, 'method': 'post', 'auth': 'https://inputtools.google.com'
+                ':path': path, 'method': 'post'
             });
             req.setEncoding('utf8');
 
             let data = '';
             req.on('data', (chunk) => { data += chunk; });
             req.on('end', () => {
-                console.log(`\n${data}`);
+                // console.log(`\n${data}`);
                 resolve(data);
             });
             // maybe need to handle more `on`
             const add_req_on = (event: string) => {
                 req.on(event, () => window.showInformationMessage(event));
             };
-            add_req_on("aborted");
-            add_req_on("close");
-            add_req_on("data");
-            add_req_on("drain");
-            add_req_on("end");
-            add_req_on("error");
-            add_req_on("finish");
-            add_req_on("frameError");
-            add_req_on("pipe");
-            add_req_on("timeout");
-            add_req_on("trailers");
-            add_req_on("wantTrailers");
+            // add_req_on("aborted");
+            // add_req_on("close");
+            // add_req_on("data");
+            // add_req_on("drain");
+            // add_req_on("end");
+            // add_req_on("error");
+            // add_req_on("finish");
+            // add_req_on("frameError");
+            // add_req_on("pipe");
+            // add_req_on("timeout");
+            // add_req_on("trailers");
+            // add_req_on("wantTrailers");
             req.end();
         });
     }
@@ -75,6 +75,7 @@ export class CloudPinyin {
         const url = `/request?text=${pinyin}&itc=zh-t-i0-pinyin&num=${limit}&cp=0&cs=1&ie=utf-8&oe=utf-8&app=demopage`;
 
         const response = await this.h2client.post(url);
+        // window.showInformationMessage(response);
 
         const fn_parse_may_throw = () => {
 

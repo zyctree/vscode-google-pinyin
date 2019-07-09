@@ -31,23 +31,73 @@
 				"key": "ctrl+space"
 			},
 			{
-				"command": "google-pinyin.accept",
+				"command": "google-pinyin.accept.seleted",
 				"key": "enter",
 				"when": "google-pinyin.seleting"
 			},
 			{
-				"command": "google-pinyin.accept",
+				"command": "google-pinyin.accept.first",
 				"key": "space",
 				"when": "google-pinyin.seleting"
 			},
 			{
-				"command": "google-pinyin.nextpage",
+				"command": "google-pinyin.pagenext",
+				"key": "=",
+				"when": "google-pinyin.seleting"
+			},
+			{
+				"command": "google-pinyin.pageprev",
+				"key": "-",
+				"when": "google-pinyin.seleting"
+			},
+			{
+				"command": "google-pinyin.pagenext",
 				"key": "pagedown",
 				"when": "google-pinyin.seleting"
 			},
 			{
-				"command": "google-pinyin.lastpage",
+				"command": "google-pinyin.pageprev",
 				"key": "pageup",
+				"when": "google-pinyin.seleting"
+			},
+			{
+				"command": "google-pinyin.typing.1",
+				"key": "1",
+				"when": "google-pinyin.seleting"
+			},
+			{
+				"command": "google-pinyin.typing.2",
+				"key": "2",
+				"when": "google-pinyin.seleting"
+			},
+			{
+				"command": "google-pinyin.typing.3",
+				"key": "3",
+				"when": "google-pinyin.seleting"
+			},
+			{
+				"command": "google-pinyin.typing.4",
+				"key": "4",
+				"when": "google-pinyin.seleting"
+			},
+			{
+				"command": "google-pinyin.typing.5",
+				"key": "5",
+				"when": "google-pinyin.seleting"
+			},
+			{
+				"command": "google-pinyin.typing.6",
+				"key": "6",
+				"when": "google-pinyin.seleting"
+			},
+			{
+				"command": "google-pinyin.typing.7",
+				"key": "7",
+				"when": "google-pinyin.seleting"
+			},
+			{
+				"command": "google-pinyin.typing.8",
+				"key": "8",
 				"when": "google-pinyin.seleting"
 			},
 			{

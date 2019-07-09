@@ -23,20 +23,30 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 	}));
 
-	context.subscriptions.push(vscode.commands.registerCommand('google-pinyin.pageup', () => {
-		pinyin_state.pageup();
+	context.subscriptions.push(vscode.commands.registerCommand('google-pinyin.pagenext', () => {
+		pinyin_state.pagenext();
 	}));
-	context.subscriptions.push(vscode.commands.registerCommand('google-pinyin.pagedown', () => {
-		pinyin_state.pagedown();
+	context.subscriptions.push(vscode.commands.registerCommand('google-pinyin.pageprev', () => {
+		pinyin_state.pageprev();
 	}));
-	context.subscriptions.push(vscode.commands.registerCommand('google-pinyin.accept', () => {
-		pinyin_state.onDidAccept();
+	context.subscriptions.push(vscode.commands.registerCommand('google-pinyin.accept.selected', () => {
+		pinyin_state.acceptSelected();
+	}));
+	context.subscriptions.push(vscode.commands.registerCommand('google-pinyin.accept.first', () => {
+		pinyin_state.acceptFirst();
 	}));
 
 	for (let i = 0; i < 26; i += 1) {
 		const ch = String.fromCharCode('a'.charCodeAt(0) + i);
 		context.subscriptions.push(vscode.commands.registerCommand('google-pinyin.typing.' + ch, () => {
 			pinyin_state.typing(ch);
+		}));
+	}
+
+	for (let i = 1; i <= 8; i += 1) {
+		const ch = String.fromCharCode('0'.charCodeAt(0) + i);
+		context.subscriptions.push(vscode.commands.registerCommand('google-pinyin.typing.' + ch, () => {
+			pinyin_state.typingNum(i);
 		}));
 	}
 
@@ -51,6 +61,7 @@ class PinyinState {
 	index = 0;
 	page = 0;
 	constructor(readonly cloudPinyin: cloud.CloudPinyin) {
+		this.quickPick.matchOnDetail = true;
 		this.quickPick.onDidChangeValue(() => this.onDidChangeValue());
 		// this.quickPick.onDidChangeValue(this.onDidChangeValue);
 		this.quickPick.onDidAccept(() => this.onDidAccept());
@@ -64,18 +75,18 @@ class PinyinState {
 		// this.quickPick.onDidChangeSelection(show("onDidChangeSelection"));
 	}
 	show() {
-		vscode.commands.executeCommand("setContext", "extension.seleting", true);
+		vscode.commands.executeCommand("setContext", "google-pinyin.seleting", true);
 		this.quickPick.show();
 	}
 
-	pageup() {
+	pageprev() {
 		if (this.page > 0) {
 			this.page -= 1;
 		}
 		this.searchAndShow();
 	}
 
-	pagedown() {
+	pagenext() {
 		this.page += 1;
 		this.searchAndShow();
 	}
@@ -85,7 +96,9 @@ class PinyinState {
 		this.onDidChangeValue();
 	}
 	typingNum(n: number) {
-		this.Accept(this.quickPick.items[n]);
+		if (this.quickPick.items[n - 1]) {
+			this.accept(this.quickPick.items[n - 1]);
+		}
 	}
 
 	onDidChangeValue() {
@@ -104,6 +117,7 @@ class PinyinState {
 
 
 		const item_count = (this.page + 1) * 8;
+		const value = this.quickPick.value;
 		const result = await this.cloudPinyin.search(this.quickPick.value, item_count);
 		// window.showInformationMessage(`my page ${this.page}`);
 		if (my_index < this.index_updated) {
@@ -113,30 +127,42 @@ class PinyinState {
 		this.index_updated = my_index;
 		this.quickPick.items = result
 			.slice(this.page * 8, (this.page + 1) * 8)
+			.filter(v => !v.hanzi.toLowerCase().includes(value))
 			.map((v, i) =>
-				({ label: `${i}: ${v.hanzi}`, alwaysShow: true, result: v })
+				({ label: `${i + 1}: ${v.hanzi}`, alwaysShow: true, result: v })
 			);
+		const items = this.quickPick.items;
+		const a = items[0].label;
+		const b = items[1].label;
+		console.log(`${a} < ${b} = ${a < b}`);
 		if (my_index === this.index) {
 			this.quickPick.busy = false;
 		}
 	}
-
-	Accept(item : MyQuickPickItem | null) {
-		if (!item) {
-			return;
+	acceptFirst() {
+		if (this.quickPick.items[0]) {
+			this.accept(this.quickPick.items[0]);
 		}
+	}
+	acceptSelected() {
+		if (this.quickPick.selectedItems[0]) {
+			this.accept(this.quickPick.selectedItems[0]);
+		}
+	}
+
+	accept(item: MyQuickPickItem) {
 		editorInsert(item.result.hanzi);
 		this.quickPick.value = this.quickPick.value.substr(item.result.matchedLength);
 		this.onDidChangeValue();
 	}
 
 	onDidAccept() {
-		this.Accept(this.quickPick.items[0]);
+		this.accept(this.quickPick.selectedItems[0]);
 	}
 	onDidHide() {
 		this.quickPick.value = "";
 		this.index_updated = this.index;
-		vscode.commands.executeCommand("setContext", "extension.seleting", false);
+		vscode.commands.executeCommand("setContext", "google-pinyin.seleting", false);
 	}
 	hide() {
 		this.quickPick.hide();
