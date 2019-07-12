@@ -1,5 +1,10 @@
 {
 	"name": "google-pinyin",
+	"publisher": "zyctree",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/zyctree/vscode-google-pinyin"
+	},
 	"displayName": "google-pinyin",
 	"description": "",
 	"version": "0.1.0",
