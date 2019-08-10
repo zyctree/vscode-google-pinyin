@@ -4,21 +4,34 @@ import * as assert from 'assert';
 
 
 class H2Client {
-    h2client: http2.ClientHttp2Session;
 
-    constructor(url: string) {
-        this.h2client = http2.connect(url);
-        this.h2client.setTimeout(1000);
+    h2client?: http2.ClientHttp2Session;
+
+    reset(): http2.ClientHttp2Session {
+        let h2client = http2.connect(this.url);
+        h2client.setTimeout(1000);
         const add_client_on = (event: string) => {
-            this.h2client.on(event, () => window.showInformationMessage(`${url}: ${event}`));
+            h2client.on(event, () => window.showInformationMessage(`${this.url}: ${event}`));
+            if (this.h2client === h2client) {
+                this.h2client = undefined;
+            }
         };
         add_client_on('error');
-        add_client_on('timeout');
+        add_client_on('close');
+        add_client_on('goaway');
+        // add_client_on('timeout');
+        this.h2client = h2client;
+        return h2client;
+    }
+
+    constructor(readonly url: string) {
+        this.reset();
     }
     async post(path: string): Promise<string> {
         return new Promise((resolve, reject) => {
+            let h2client = this.h2client || this.reset();
             // window.showInformationMessage(path);
-            const req = this.h2client.request({
+            const req = h2client.request({
                 ':path': path, 'method': 'post'
             });
             req.setEncoding('utf8');
@@ -33,24 +46,14 @@ class H2Client {
             const add_req_on = (event: string) => {
                 req.on(event, () => window.showInformationMessage(event));
             };
-            // add_req_on("aborted");
-            // add_req_on("close");
-            // add_req_on("data");
-            // add_req_on("drain");
-            // add_req_on("end");
-            // add_req_on("error");
-            // add_req_on("finish");
-            // add_req_on("frameError");
-            // add_req_on("pipe");
-            // add_req_on("timeout");
-            // add_req_on("trailers");
-            // add_req_on("wantTrailers");
             req.end();
         });
     }
 
     dispose() {
-        this.h2client.close();
+        if (this.h2client) {
+            this.h2client.close();
+        }
     }
 }
 
