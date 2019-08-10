@@ -6,7 +6,7 @@
 		"url": "https://github.com/zyctree/vscode-google-pinyin"
 	},
 	"displayName": "google-pinyin",
-	"description": "",
+	"description": "Input Chinese with online google input tools",
 	"version": "0.1.0",
 	"engines": {
 		"vscode": "^1.36.0"
@@ -248,7 +248,7 @@
 		"@types/glob": "^7.1.1",
 		"@types/mocha": "^5.2.6",
 		"@types/node": "^10.14.15",
-		"@types/vscode": "^1.37.0",
+		"@types/vscode": "~1.36.0",
 		"glob": "^7.1.4",
 		"mocha": "^6.2.0",
 		"tslint": "^5.12.1",
