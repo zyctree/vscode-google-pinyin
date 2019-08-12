@@ -27,33 +27,34 @@ class H2Client {
     constructor(readonly url: string) {
         this.reset();
     }
-    async post(path: string): Promise<string> {
+    async post(path: string): Promise<string | undefined> {
         return new Promise((resolve, reject) => {
             let h2client = this.h2client || this.reset();
-            // window.showInformationMessage(path);
-            const req = h2client.request({
-                ':path': path, 'method': 'post'
-            });
-            req.setEncoding('utf8');
+            try {
+                // window.showInformationMessage(path);
+                const req = h2client.request({
+                    ':path': path, 'method': 'post'
+                });
+                req.setEncoding('utf8');
 
-            let data = '';
-            req.on('data', (chunk) => { data += chunk; });
-            req.on('end', () => {
-                // console.log(`\n${data}`);
-                resolve(data);
-            });
-            // maybe need to handle more `on`
-            const add_req_on = (event: string) => {
-                req.on(event, () => window.showInformationMessage(event));
-            };
-            req.end();
+                let data = '';
+                req.on('data', (chunk) => { data += chunk; });
+                req.on('end', () => {
+                    // console.log(`\n${data}`);
+                    resolve(data);
+                });
+                // maybe need to handle more `on`
+                const add_req_on = (event: string) => {
+                    req.on(event, () => window.showInformationMessage(event));
+                };
+                req.end();
+            } catch {
+                if (this.h2client === h2client) {
+                    this.h2client = undefined;
+                }
+                resolve(undefined);
+            }
         });
-    }
-
-    dispose() {
-        if (this.h2client) {
-            this.h2client.close();
-        }
     }
 }
 
@@ -65,19 +66,17 @@ export interface SearchResult {
 
 export class CloudPinyin {
     h2client = new H2Client('https://inputtools.google.com');
-
-    dispose() {
-        window.showInformationMessage("dispose");
-        this.h2client.dispose();
-    }
-
-    async search(pinyin: string, limit: number): Promise<Array<SearchResult>> {
+    async search(pinyin: string, limit: number): Promise<Array<SearchResult> | undefined> {
         if (!pinyin) {
             return [];
         }
         const url = `/request?text=${pinyin}&itc=zh-t-i0-pinyin&num=${limit}&cp=0&cs=1&ie=utf-8&oe=utf-8&app=demopage`;
 
+
         const response = await this.h2client.post(url);
+        if (!response) {
+            return undefined;
+        }
         // window.showInformationMessage(response);
 
         const fn_parse_may_throw = () => {
@@ -116,7 +115,7 @@ export class CloudPinyin {
             return fn_parse_may_throw();
         } catch (e) {
             window.showInformationMessage(`parse error on ${response}`);
-            throw new Error(`parse on ${response}`);
+            return undefined;
         }
     }
 }

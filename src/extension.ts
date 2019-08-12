@@ -8,7 +8,6 @@ import * as cloud from './clound';
 
 export function activate(context: vscode.ExtensionContext) {
 	const cloudPinyin = new cloud.CloudPinyin();
-	context.subscriptions.push(cloudPinyin);
 
 	const pinyin_state = new PinyinState(cloudPinyin);
 
@@ -119,6 +118,9 @@ class PinyinState {
 		const item_count = (this.page + 1) * 8;
 		const value = this.quickPick.value;
 		const result = await this.cloudPinyin.search(this.quickPick.value, item_count);
+		if (!result) {
+			return;
+		}
 		// window.showInformationMessage(`my page ${this.page}`);
 		if (my_index < this.index_updated) {
 			window.showInformationMessage(`ignore the result with index ${my_index}`);
