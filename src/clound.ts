@@ -10,16 +10,17 @@ class H2Client {
     reset(): http2.ClientHttp2Session {
         let h2client = http2.connect(this.url);
         h2client.setTimeout(1000);
-        const add_client_on = (event: string) => {
-            h2client.on(event, () => window.showInformationMessage(`${this.url}: ${event}`));
-            if (this.h2client === h2client) {
-                this.h2client = undefined;
-            }
-        };
+        const add_client_on = (event: string) =>
+            h2client.on(event, () => {
+                window.showInformationMessage(`${this.url}: ${event}`);
+                if (this.h2client === h2client) {
+                    this.h2client = undefined;
+                }
+            });
+
         add_client_on('error');
         add_client_on('close');
         add_client_on('goaway');
-        // add_client_on('timeout');
         this.h2client = h2client;
         return h2client;
     }
