@@ -136,7 +136,6 @@ class PinyinState {
 		const items = this.quickPick.items;
 		const a = items[0].label;
 		const b = items[1].label;
-		console.log(`${a} < ${b} = ${a < b}`);
 		if (my_index === this.index) {
 			this.quickPick.busy = false;
 		}

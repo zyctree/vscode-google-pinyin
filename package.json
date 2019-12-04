@@ -21,14 +21,9 @@
     "main": "./out/extension.js",
     "contributes": {
         "commands": [{
-                "command": "google-pinyin.toggle",
-                "title": "Enable Google Pinyin"
-            },
-            {
-                "command": "google-pinyin.toggle",
-                "title": "Disable Google Pinyin"
-            }
-        ],
+            "command": "google-pinyin.toggle",
+            "title": "Toogle Google Pinyin"
+        }],
         "keybindings": [{
                 "command": "google-pinyin.toggle",
                 "key": "ctrl+space"
