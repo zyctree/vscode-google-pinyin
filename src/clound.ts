@@ -3,9 +3,6 @@ import { window } from 'vscode';
 import * as assert from 'assert';
 import * as net from 'net';
 import * as url from 'url';
-import { normalize } from 'path';
-import { TIMEOUT } from 'dns';
-import { setFlagsFromString } from 'v8';
 
 const https_proxy = process.env.https_proxy || process.env.HTTPS_PROXY;
 const debug = console.log;
