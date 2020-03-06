@@ -37,6 +37,11 @@
                 "when": "google-pinyin.seleting"
             },
             {
+                "command": "google-pinyin.input.unsolved",
+                "key": "\\",
+                "when": "google-pinyin.seleting"
+            },
+            {
                 "command": "google-pinyin.accept.first",
                 "key": "space",
                 "when": "google-pinyin.seleting"

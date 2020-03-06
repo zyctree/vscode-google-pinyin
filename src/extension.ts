@@ -31,6 +31,9 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.commands.registerCommand('google-pinyin.accept.selected', () => {
 		pinyin_state.acceptSelected();
 	}));
+	context.subscriptions.push(vscode.commands.registerCommand('google-pinyin.input.unsolved', () => {
+		pinyin_state.inputUnsolved();
+	}));
 	context.subscriptions.push(vscode.commands.registerCommand('google-pinyin.accept.first', () => {
 		pinyin_state.acceptFirst();
 	}));
@@ -150,6 +153,13 @@ class PinyinState {
 			this.accept(this.quickPick.selectedItems[0]);
 		}
 	}
+
+	inputUnsolved() {
+		editorInsert(this.quickPick.value);
+		this.quickPick.value = "";
+		this.onDidHide();
+	}
+
 
 	accept(item: MyQuickPickItem) {
 		editorInsert(item.result.hanzi);
