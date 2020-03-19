@@ -6,6 +6,6 @@
 
 `"space"` to choose the first
 
-`"enter"` to choose the selected
+`"enter"` to input the english
 
 `"-"`, `"+"` to turn to the prev/next page

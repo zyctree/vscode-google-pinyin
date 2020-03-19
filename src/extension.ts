@@ -157,7 +157,7 @@ class PinyinState {
 	inputUnsolved() {
 		editorInsert(this.quickPick.value);
 		this.quickPick.value = "";
-		this.onDidHide();
+		this.quickPick.hide();
 	}
 
 
@@ -168,7 +168,7 @@ class PinyinState {
 	}
 
 	onDidAccept() {
-		this.accept(this.quickPick.selectedItems[0]);
+		this.inputUnsolved();
 	}
 	onDidHide() {
 		this.quickPick.value = "";
