@@ -191,6 +191,7 @@ const editorInsert = (text: string) => {
 			position, text
 		);
 	});
+	vscode.commands.executeCommand('editor.action.triggerSuggest')
 };
 
 
